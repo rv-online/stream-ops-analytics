@@ -18,6 +18,7 @@ def build_report(events: list[dict[str, object]]) -> dict[str, object]:
     service_latencies: dict[str, list[int]] = defaultdict(list)
     service_errors: dict[str, int] = defaultdict(int)
     service_total: dict[str, int] = defaultdict(int)
+    slo_breaches: dict[str, int] = defaultdict(int)
 
     for event in events:
         service = str(event["service"])
@@ -27,27 +28,38 @@ def build_report(events: list[dict[str, object]]) -> dict[str, object]:
         service_latencies[service].append(latency_ms)
         if status != "ok":
             service_errors[service] += 1
+        if latency_ms >= 800:
+            slo_breaches[service] += 1
 
     services: dict[str, dict[str, object]] = {}
     incidents: list[dict[str, object]] = []
     for service, total in sorted(service_total.items()):
         error_rate = round(service_errors[service] / total, 3)
         p95 = percentile(service_latencies[service], 0.95)
+        breach_rate = round(slo_breaches[service] / total, 3)
+        incident_score = round((error_rate * 100) + (breach_rate * 50) + (p95 / 100), 2)
         services[service] = {
             "events": total,
             "error_rate": error_rate,
             "p95_latency_ms": p95,
+            "slo_breach_rate": breach_rate,
+            "incident_score": incident_score,
         }
         if error_rate >= 0.2 or p95 >= 900:
             incidents.append(
                 {
                     "service": service,
                     "severity": "high" if error_rate >= 0.3 or p95 >= 1200 else "medium",
-                    "reason": f"error_rate={error_rate}, p95_latency_ms={p95}",
+                    "reason": f"error_rate={error_rate}, p95_latency_ms={p95}, slo_breach_rate={breach_rate}",
                 }
             )
 
-    return {"service_summary": services, "candidate_incidents": incidents}
+    noisiest_service = max(services, key=lambda item: services[item]["incident_score"], default=None)
+    return {
+        "service_summary": services,
+        "candidate_incidents": incidents,
+        "noisiest_service": noisiest_service,
+    }
 
 
 def run(input_path: Path, output_path: Path) -> dict[str, object]:

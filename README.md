@@ -16,4 +16,4 @@ python -m unittest discover -s tests
 
 ## Hiring Signal
 
-This project demonstrates event-oriented thinking, operational metrics design, and a clean separation between parsing, aggregation, and alert logic.
+This project demonstrates event-oriented thinking, operational metrics design, and a clean separation between parsing, aggregation, and alert logic. The report now includes SLO breach rate, incident scoring, and a noisiest-service signal so it reads more like internal reliability tooling.
