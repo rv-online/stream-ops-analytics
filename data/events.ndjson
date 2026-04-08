@@ -1,0 +1,10 @@
+{"service":"ingest-api","latency_ms":180,"status":"ok"}
+{"service":"ingest-api","latency_ms":220,"status":"ok"}
+{"service":"ingest-api","latency_ms":950,"status":"error"}
+{"service":"ingest-api","latency_ms":1100,"status":"error"}
+{"service":"billing-worker","latency_ms":410,"status":"ok"}
+{"service":"billing-worker","latency_ms":420,"status":"ok"}
+{"service":"billing-worker","latency_ms":405,"status":"ok"}
+{"service":"search-api","latency_ms":1250,"status":"ok"}
+{"service":"search-api","latency_ms":1180,"status":"ok"}
+{"service":"search-api","latency_ms":1330,"status":"ok"}
