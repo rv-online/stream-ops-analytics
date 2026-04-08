@@ -1,19 +1,30 @@
 # Stream Ops Analytics
 
-Streaming analytics CLI for newline-delimited operational events. The code reads an NDJSON stream, aggregates service-level metrics, and highlights candidate incidents.
+Python streaming-analytics style CLI for SLA reporting, breach scoring, and noisy-service detection from operational events.
 
-## Run
+## Why This Exists
+
+Built to resemble the kind of lightweight reliability analytics utility teams use when they need operational signal quickly without standing up full infra.
+
+## What This Demonstrates
+
+- stream-style event processing from NDJSON inputs
+- SLO breach rate, incident scoring, and noisiest-service summaries
+- deterministic CLI output with unit tests
+
+## Architecture
+
+1. event streams are ingested and grouped by service and time window
+1. analytics logic computes breach and noise-oriented metrics
+1. reports summarize operational hotspots for triage
+
+## Run It
 
 ```bash
-python -m src.analytics --input data/events.ndjson --output out/report.json
+python -m unittest tests.test_analytics
+python src/analytics.py --input data/events.ndjson --output out/report.json
 ```
 
-## Test
+## Verification
 
-```bash
-python -m unittest discover -s tests
-```
-
-## Hiring Signal
-
-This project demonstrates event-oriented thinking, operational metrics design, and a clean separation between parsing, aggregation, and alert logic. The report now includes SLO breach rate, incident scoring, and a noisiest-service signal so it reads more like internal reliability tooling.
+Use the explicit test module and rerun the CLI to refresh the report artifact.
